@@ -24,7 +24,8 @@ checks: bayes
 readout: checks
 	$(PYTHON) scripts/06_readout.py
 
-report: readout
+report:
+	$(PYTHON) scripts/06_readout.py
 	@echo "Wrote reports/risk_readout.md"
 
 test:
