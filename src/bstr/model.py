@@ -129,8 +129,10 @@ def fit_model(
     target_accept: float = 0.9,
     seed: int = 20260101,
     progressbar: bool = False,
+    include_log_likelihood: bool = True,
+    include_posterior_predictive: bool = True,
 ) -> Any:
-    """Sample the posterior (with log-likelihood) and the posterior predictive."""
+    """Sample the posterior (with log-likelihood) and, optionally, the posterior predictive."""
     t0 = time.time()
     with model:
         idata = pm.sample(
@@ -141,16 +143,17 @@ def fit_model(
             random_seed=seed,
             progressbar=progressbar,
             compute_convergence_checks=False,
-            idata_kwargs={"log_likelihood": True},
+            idata_kwargs={"log_likelihood": include_log_likelihood},
         )
         sample_seconds = time.time() - t0
-        pm.sample_posterior_predictive(
-            idata,
-            model=model,
-            extend_inferencedata=True,
-            random_seed=seed + 1,
-            progressbar=progressbar,
-        )
+        if include_posterior_predictive:
+            pm.sample_posterior_predictive(
+                idata,
+                model=model,
+                extend_inferencedata=True,
+                random_seed=seed + 1,
+                progressbar=progressbar,
+            )
     idata.attrs["sampling_seconds"] = float(sample_seconds)
     idata.attrs["fit_seconds"] = float(time.time() - t0)
     idata.attrs["draws"] = int(draws)
