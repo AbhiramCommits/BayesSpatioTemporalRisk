@@ -38,4 +38,6 @@ lint:
 	$(PYTHON) -m ruff check .
 
 clean:
-	rm -f data/*.parquet artifacts/* figures/*.png reports/*.md
+	rm -f data/*.parquet data/*.nc
+	rm -f artifacts/*.nc artifacts/*.json artifacts/*.csv artifacts/*.parquet
+	rm -f figures/*.png reports/*.md

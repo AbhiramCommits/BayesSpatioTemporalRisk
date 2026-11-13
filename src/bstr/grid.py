@@ -83,9 +83,13 @@ def adjacency_edge_list(W: sparse.csr_matrix) -> tuple[np.ndarray, np.ndarray]:
 
 
 def assign_regions(gdf: gpd.GeoDataFrame, cfg: SimConfig) -> np.ndarray:
-    """Assign cells to 6 contiguous 2 x 3 rectangular regions (row-major numbering)."""
-    row_blocks = 2
-    col_blocks = 3
+    """Assign cells to contiguous rectangular regions (6 -> 2 x 3 by default)."""
+    region_grid = {4: (2, 2), 6: (2, 3), 8: (2, 4), 9: (3, 3), 12: (3, 4)}
+    row_blocks, col_blocks = region_grid.get(cfg.N_REGIONS, (1, cfg.N_REGIONS))
+    if row_blocks > cfg.N_ROWS or col_blocks > cfg.N_COLS:
+        raise ValueError(
+            f"{cfg.N_REGIONS} regions do not fit a {cfg.N_ROWS} x {cfg.N_COLS} grid"
+        )
     rb = (gdf["row"].to_numpy() * row_blocks) // cfg.N_ROWS
     cb = (gdf["col"].to_numpy() * col_blocks) // cfg.N_COLS
     return (rb * col_blocks + cb).astype(int)

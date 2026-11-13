@@ -34,6 +34,7 @@ class SimConfig:
     N_DAYS: int = 60
     CELL_KM: float = 1.0
     SEED: int = 20260101
+    N_REGIONS: int = 6
 
     # Ground-truth hyperparameters
     SPATIAL_SD: float = 0.6
@@ -52,10 +53,6 @@ class SimConfig:
     @property
     def N_CELLS(self) -> int:
         return self.N_ROWS * self.N_COLS
-
-    @property
-    def N_REGIONS(self) -> int:
-        return 6
 
 
 @dataclass(frozen=True)
